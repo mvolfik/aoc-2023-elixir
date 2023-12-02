@@ -36,11 +36,7 @@ defmodule Main do
 
           map |> IO.inspect()
 
-          if validate(map, "red", 12) && validate(map, "green", 13) && validate(map, "blue", 14) do
-            String.split(head, " ") |> tl |> hd |> Integer.parse() |> elem(0)
-          else
-            0
-          end
+          map |> Map.values() |> List.foldr(1, &*/2)
         ) + calc()
     end
   end
