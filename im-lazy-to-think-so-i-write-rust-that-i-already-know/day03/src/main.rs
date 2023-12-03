@@ -1,6 +1,6 @@
 #![feature(let_chains)]
 
-use std::{io::stdin, iter::once};
+use std::{collections::HashMap, io::stdin, iter::once};
 
 fn main() {
     let mut data = Vec::<Vec<char>>::new();
@@ -17,7 +17,7 @@ fn main() {
     data[0] = vec!['.'; w];
     data.push(vec!['.'; w]);
 
-    let mut sum = 0;
+    let mut gears = HashMap::<_, Vec<u64>>::new();
 
     for y in 1..data.len() - 1 {
         let mut num_start = None;
@@ -27,24 +27,34 @@ fn main() {
                 (true, Some(_)) => {}
                 (false, None) => {}
                 (false, Some(startx)) => {
-                    if data[y - 1][startx - 1..=x]
+                    let num = data[y][startx..x]
                         .iter()
-                        .chain(data[y + 1][startx - 1..=x].iter())
-                        .chain(once(&data[y][startx - 1]))
-                        .chain(once(&data[y][x]))
-                        .any(|c| !(c.is_numeric() || *c == '.'))
+                        .collect::<String>()
+                        .parse::<u64>()
+                        .unwrap();
+
+                    for (x, y) in (startx - 1..=x)
+                        .map(|x| (x, y - 1))
+                        .chain((startx - 1..=x).map(|x| (x, y + 1)))
+                        .chain(once((startx - 1, y)))
+                        .chain(once((x, y)))
                     {
-                        println!("{:?}", &data[y][startx - 1..=x]);
-                        sum += data[y][startx..x]
-                            .iter()
-                            .collect::<String>()
-                            .parse::<u64>()
-                            .unwrap();
+                        if data[y][x] == '*' {
+                            gears.entry((x, y)).or_default().push(num);
+                        }
                     }
+
                     num_start = None;
                 }
             }
         }
     }
-    println!("{}", sum);
+
+    let res = gears
+        .into_iter()
+        .filter(|(_, v)| v.len() == 2)
+        .map(|(_, v)| v[0] * v[1])
+        .sum::<u64>();
+
+    println!("{}", res);
 }
