@@ -6,12 +6,17 @@ def ll():
 
 
 cache = {}
+
+
 def f(text, first_available, nums, prefix):
     seg_len = nums[len(prefix)]
     do_break = False
     rv = 0
+    k = (len(prefix), first_available)
+    if k in cache:
+        # print("cache hit", k, cache[k])
+        return rv + cache[k]
     for start_i in range(first_available, len(text) - seg_len + 1):
-        # if (len(prefix), first_available)
         if do_break:
             break
 
@@ -39,20 +44,8 @@ def f(text, first_available, nums, prefix):
         if start_i + seg_len < len(text) and text[start_i + seg_len] != "#":
             rv += f(text, start_i + seg_len + 1, nums, prefix + (start_i,))
 
+    cache[(len(prefix), first_available)] = rv
     return rv
-
-def check(a, nums, x):
-    assert len(x) == len(nums)
-    b = ["."] * len(a)
-    for l, i in zip(nums, x):
-        for j in range(i, i + l):
-            assert b[j] == "."
-            b[j] = "#"
-    b = "".join(b)
-    print(a)
-    print(b)
-
-    print()
 
 
 s = 0
@@ -61,5 +54,6 @@ while (l := ll()) is not None:
         continue
     a, b = l.split()
     nums = [int(x) for x in b.split(",")]
-    s += f(a, 0, nums, ())
+    cache = {}
+    s += f("?".join(a for _ in range(5)), 0, nums * 5, ())
 print(s)
