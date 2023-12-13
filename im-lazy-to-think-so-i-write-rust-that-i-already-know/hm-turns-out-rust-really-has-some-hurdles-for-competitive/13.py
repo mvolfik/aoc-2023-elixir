@@ -10,7 +10,7 @@ def f(grid):
     for i in range(1, len(grid)):
         print()
         print(i)
-        ok = True
+        errs = 0
         for j in range(min(i, len(grid) - i)):
             y1 = i + j
             y2 = i - j - 1
@@ -18,11 +18,12 @@ def f(grid):
             for x in range(len(grid[0])):
                 print("comparing", y1, y2, x)
                 if grid[y1][x] != grid[y2][x]:
-                    ok = False
-                    break
-            if not ok:
+                    errs += 1
+                    if errs > 1:
+                        break
+            if errs > 1:
                 break
-        if ok:
+        if errs == 1:
             return i
 
 
