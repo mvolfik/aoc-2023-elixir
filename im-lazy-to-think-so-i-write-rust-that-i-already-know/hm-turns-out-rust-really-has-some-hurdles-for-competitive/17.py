@@ -26,7 +26,7 @@ while q:
         print(c)
         break
 
-    for i in range(3):
+    for i in range(10):
         if d == "r":
             x += 1
         elif d == "l":
@@ -40,5 +40,6 @@ while q:
             break
 
         c += g[y][x]
-        for dir in "rl" if d in "ud" else "ud":
-            heapq.heappush(q, (c, x, y, dir))
+        if i >= 3:
+            for dir in "rl" if d in "ud" else "ud":
+                heapq.heappush(q, (c, x, y, dir))
