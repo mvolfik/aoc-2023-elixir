@@ -42,4 +42,5 @@ while q:
         c += g[y][x]
         if i >= 3:
             for dir in "rl" if d in "ud" else "ud":
-                heapq.heappush(q, (c, x, y, dir))
+                if (x, y, dir) not in visited:
+                    heapq.heappush(q, (c, x, y, dir))
