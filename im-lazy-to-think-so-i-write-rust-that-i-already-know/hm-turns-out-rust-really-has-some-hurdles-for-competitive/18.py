@@ -10,61 +10,30 @@ def ll():
 
 g = defaultdict(lambda: ".")
 
+points = [(0, 0)]
 x, y = 0, 0
-g[(x, y)] = "#"
+line_len = 1
 while (l := ll()) is not None:
     if not l:
         continue
     a, b, c = l.split(" ")
-    for i in range(int(b)):
-        if a == "R":
-            x += 1
-        elif a == "L":
-            x -= 1
-        elif a == "U":
-            y -= 1
-        elif a == "D":
-            y += 1
+    b = int(c[2:-2], 16)
+    a = "RDLU"[int(c[-2])]
+    if a == "R":
+        x += b
+    elif a == "L":
+        x -= b
+    elif a == "U":
+        y -= b
+    elif a == "D":
+        y += b
+    line_len += b / 2
 
-        g[(x, y)] = "#"
+    points.append((x, y))
 
-minx = min(x for x, y in g.keys())
-maxx = max(x for x, y in g.keys())
-miny = min(y for x, y in g.keys())
-maxy = max(y for x, y in g.keys())
+assert points[0] == points[-1]
 
-for y in range(miny, maxy + 1):
-    for x in range(minx, maxx + 1):
-        print(g[(x, y)], end="")
-    print()
-
-q = set()
-q.add(
-    (
-        minx
-        + len(
-            "......................................................................................................................................#...#...#......."
-        ),
-        miny + 10,
-    )
-)
-
-while q:
-    x, y = q.pop()
-    if x < minx or x > maxx or y < miny or y > maxy:
-        raise Exception(f"Out of bounds {x}, {y}")
-    g[(x, y)] = "#"
-
-    for item in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
-        if g[item] == "#":
-            continue
-        g[item] = "#"
-        q.add(item)
-
-print(sum(1 for x, y in g.keys() if g[(x, y)] == "#"))
-
-
-for y in range(miny, maxy + 1):
-    for x in range(minx, maxx + 1):
-        print(g[(x, y)], end="")
-    print()
+a = 0
+for i in range(len(points) - 1):
+    a += points[i][0] * points[i + 1][1] - points[i + 1][0] * points[i][1]
+print(line_len, abs(a) / 2, line_len + (abs(a) / 2))
