@@ -53,7 +53,7 @@ outF = 0
 
 
 def pulse(from_, name, val):
-    print(f"{from_} -{val}-> {name}")
+    # print(f"{from_} -{val}-> {name}")
     global outT, outF
 
     if val:
@@ -85,15 +85,20 @@ def pulse(from_, name, val):
             yield name, o, not outval
 
 
-for i in range(1000):
+periods = []
+
+for i in range(1, 5000):
     next = [("button", "broadcaster", False)]
     while len(next) > 0:
         this = next
         next = []
 
         for e in this:
+            if e[1] in ["dh", "dp", "qd", "bb"] and not e[2]:
+                periods.append(i)
             for x in pulse(*e):
                 next.append(x)
-    print()
-    print()
-print(outT, outF, outT * outF)
+
+import math
+
+print(math.lcm(*periods))
