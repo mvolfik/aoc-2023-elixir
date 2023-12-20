@@ -19,6 +19,16 @@ while (l := ll()) is not None:
 
     rules[name] = (typ, outs)
 
+print("digraph sus {")
+pm = {"br": "", "&": "A_", "%": "X_"}
+for name, (typ, outs) in rules.items():
+    for o in outs:
+        if o in rules:
+            o = pm[rules[o][0]] + o
+
+        print(f"  {pm[typ]}{name} -> {o};")
+print("}")
+
 
 def init_for(t):
     if t == "%":
